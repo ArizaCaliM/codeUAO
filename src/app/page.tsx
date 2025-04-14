@@ -20,10 +20,10 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
+  onAuthStateChanged,
   Auth,
 } from "firebase/auth";
 import {useToast} from "@/hooks/use-toast";
-import Image from 'next/image';
 import { useFirebaseAuth } from '@/lib/firebase';
 import {Input} from "@/components/ui/input";
 
@@ -190,13 +190,6 @@ export default function Home() {
       {user ? (
         <>
           <div className="flex items-center mb-4">
-            <Image
-              src="https://firebasestorage.googleapis.com/v0/b/codeuao.appspot.com/o/logo_codeuao.png?alt=media&token=c99a97d9-90a7-4a92-b8ad-b47668643949"
-              alt="Logo de CodeUAO"
-              width={50}
-              height={50}
-              className="mr-2 rounded-full"
-            />
             <h1 className="text-2xl font-bold"><span className="text-red-500">CodeUAO</span></h1>
           </div>
           <Button variant="outline" onClick={handleSignOut}>Cerrar Sesión</Button>
@@ -318,16 +311,7 @@ export default function Home() {
         </>
       ) : (
         <div className="flex flex-col items-center p-4 w-full">
-          <div className="flex items-center mb-4">
-            <Image
-              src="https://firebasestorage.googleapis.com/v0/b/codeuao.appspot.com/o/logo_codeuao.png?alt=media&token=c99a97d9-90a7-4a92-b8ad-b47668643949"
-              alt="Logo de CodeUAO"
-              width={50}
-              height={50}
-              className="mr-2 rounded-full"
-            />
-            <h1 className="text-2xl font-bold mb-4"><span className="text-red-500">CodeUAO</span></h1>
-          </div>
+          <h1 className="text-2xl font-bold mb-4"><span className="text-red-500">CodeUAO</span></h1>
           <Card className="w-full max-w-md">
             <CardHeader>
               <CardTitle>{isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}</CardTitle>
