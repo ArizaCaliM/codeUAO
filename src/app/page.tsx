@@ -1,6 +1,6 @@
 'use client';
 
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {
   Card,
   CardContent,
@@ -16,6 +16,10 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/c
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 import {CheckCircle, XCircle} from 'lucide-react';
 import {ScrollArea} from "@/components/ui/scroll-area";
+import {Input} from "@/components/ui/input";
+import {signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, Auth} from "firebase/auth";
+import {auth} from "@/lib/firebase";
+import {toast} from "@/hooks/use-toast";
 
 export default function Home() {
   const [problem, setProblem] = useState<{
@@ -41,6 +45,25 @@ export default function Home() {
   } | null>(null);
   const [loading, setLoading] = useState(false);
 
+  // Authentication state
+  const [user, setUser] = useState<any>(null);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLogin, setIsLogin] = useState(true); // true for login, false for signup
+    const [authLoading, setAuthLoading] = useState(false);
+  const [firebaseAuth, setFirebaseAuth] = useState<Auth | null>(null);
+
+
+  useEffect(() => {
+    // Initialize Firebase Auth
+    setFirebaseAuth(auth());
+
+    const unsubscribe = auth().onAuthStateChanged((user) => {
+      setUser(user);
+    });
+    return () => unsubscribe();
+  }, []);
+
   const handleGenerateProblem = async () => {
     setLoading(true);
     try {
@@ -49,6 +72,10 @@ export default function Home() {
       setEvaluation(null); // Clear previous evaluation
     } catch (error) {
       console.error('Error al generar el problema:', error);
+      toast({
+        title: "Error",
+        description: "Error al generar el problema"
+      })
       // Handle error appropriately, maybe set an error state
     } finally {
       setLoading(false);
@@ -57,7 +84,10 @@ export default function Home() {
 
   const handleSubmitCode = async () => {
     if (!problem) {
-      alert('Por favor, genera un problema primero.');
+      toast({
+        title: "Error",
+        description: "Por favor, genera un problema primero."
+      })
       return;
     }
 
@@ -78,15 +108,116 @@ export default function Home() {
       setEvaluation(evaluationResult);
     } catch (error) {
       console.error('Error al evaluar el código:', error);
+      toast({
+        title: "Error",
+        description: "Error al evaluar el código"
+      })
       // Handle error appropriately, maybe set an error state
     } finally {
       setLoading(false);
     }
   };
 
+  const handleAuthAction = async () => {
+        setAuthLoading(true);
+    try {
+      if (!firebaseAuth) {
+        throw new Error("Firebase Auth not initialized");
+      }
+      if (isLogin) {
+        // Sign in
+        await signInWithEmailAndPassword(firebaseAuth, email, password);
+        toast({
+          title: "Inicio de sesión exitoso",
+        })
+      } else {
+        // Sign up
+        await createUserWithEmailAndPassword(firebaseAuth, email, password);
+        toast({
+          title: "Cuenta creada exitosamente",
+        })
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: `Error: ${error.message}`
+      })
+    } finally {
+            setAuthLoading(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      if (!firebaseAuth) {
+        throw new Error("Firebase Auth not initialized");
+      }
+      await signOut(firebaseAuth);
+      toast({
+        title: "Sesión cerrada",
+      })
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: `Error al cerrar sesión: ${error.message}`
+      })
+    }
+  };
+
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center p-4 w-full">
+        <h1 className="text-2xl font-bold mb-4"><span className="text-red-500">CodeUAO</span></h1>
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>{isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}</CardTitle>
+            <CardDescription>
+              {isLogin
+                ? 'Inicia sesión para acceder a CodeUAO.'
+                : 'Crea una cuenta para empezar a usar CodeUAO.'}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Input
+              type="email"
+              placeholder="Correo electrónico"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+            />
+            <Input
+              type="password"
+              placeholder="Contraseña"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
+            <Button onClick={handleAuthAction} disabled={authLoading}>
+              {authLoading
+                ? isLogin
+                  ? 'Iniciando Sesión...'
+                  : 'Creando Cuenta...'
+                : isLogin
+                  ? 'Iniciar Sesión'
+                  : 'Crear Cuenta'}
+            </Button>
+            <Button
+              type="button"
+              variant="link"
+              onClick={() => setIsLogin(!isLogin)}
+            >
+              {isLogin
+                ? '¿No tienes una cuenta? Crear cuenta'
+                : '¿Ya tienes una cuenta? Iniciar sesión'}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center p-4 w-full">
       <h1 className="text-2xl font-bold mb-4"><span className="text-red-500">CodeUAO</span></h1>
+      <Button variant="outline" onClick={handleSignOut}>Cerrar Sesión</Button>
       <div className="flex flex-col md:flex-row w-full max-w-4xl space-y-4 md:space-x-4">
         <Card className="w-full md:w-1/2">
           <CardHeader>
