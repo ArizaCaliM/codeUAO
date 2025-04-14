@@ -1,14 +1,12 @@
-'use client'
+"use client";
 
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth } from "firebase/auth";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getAuth, Auth, onAuthStateChanged } from "firebase/auth";
+import { useEffect, useState } from 'react';
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -19,22 +17,56 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase
-let app;
-try {
-  app = initializeApp(firebaseConfig);
-} catch (error: any) {
-  console.error("Firebase initialization error:", error.message);
+let _app: any;
+
+function initializeFirebase() {
+  if (!firebaseConfig ||
+      !firebaseConfig.apiKey ||
+      !firebaseConfig.authDomain ||
+      !firebaseConfig.projectId ||
+      !firebaseConfig.storageBucket ||
+      !firebaseConfig.messagingSenderId ||
+      !firebaseConfig.appId) {
+    console.error("Firebase configuration is incomplete. Check your environment variables.");
+    return null;
+  }
+  try {
+    _app = initializeApp(firebaseConfig);
+    return _app;
+  } catch (error: any) {
+    console.error("Firebase initialization error:", error.message);
+    return null;
+  }
 }
 
-let analytics;
-try {
-  analytics = getAnalytics(app);
-} catch (error: any) {
-  console.error("Firebase analytics initialization error:", error.message);
+
+export function useFirebaseAuth() {
+  const [auth, setAuth] = useState<Auth | null>(null);
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const app = initializeFirebase();
+    if (app) {
+      const authInstance = getAuth(app);
+      setAuth(authInstance);
+
+      const unsubscribe = onAuthStateChanged(authInstance, (authUser) => {
+        if (authUser) {
+          setUser(authUser);
+        } else {
+          setUser(null);
+        }
+        setLoading(false);
+      });
+
+      return () => unsubscribe();
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  return { auth, user, loading };
 }
 
-// Initialize Firebase Authentication
-export const auth = getAuth(app);
-
-export default app;
+export default initializeFirebase;
