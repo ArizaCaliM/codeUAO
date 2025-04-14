@@ -86,7 +86,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center p-4 w-full">
-      <h1 className="text-2xl font-bold mb-4">CodeDrills</h1>
+      <h1 className="text-2xl font-bold mb-4"><span className="text-red-500">CodeUAO</span></h1>
       <div className="flex flex-col md:flex-row w-full max-w-4xl space-y-4 md:space-x-4">
         <Card className="w-full md:w-1/2">
           <CardHeader>
@@ -205,3 +205,4 @@ export default function Home() {
     </div>
   );
 }
+
