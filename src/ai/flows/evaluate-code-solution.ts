@@ -62,22 +62,22 @@ const evaluateCodeSolutionPrompt = ai.definePrompt({
       feedback: z.string().describe('Feedback on the code solution.'),
     }),
   },
-  prompt: `You are an expert programming evaluator. You will be given a code solution, a problem description, and a set of test cases.
-  You will execute the code against each test case, compare the actual output to the expected output, and determine whether the code passed the test case.
-  You will then calculate an overall score for the code solution based on the number of test cases passed.
-  Finally, you will provide feedback on the code solution, including suggestions for improvement.
+  prompt: `Eres un experto evaluador de programación. Se te dará una solución de código, una descripción del problema y un conjunto de casos de prueba.
+  Ejecutarás el código contra cada caso de prueba, compararás la salida real con la salida esperada y determinarás si el código pasó el caso de prueba.
+  Luego, calcularás una puntuación general para la solución de código basada en el número de casos de prueba aprobados.
+  Finalmente, proporcionarás comentarios sobre la solución de código, incluyendo sugerencias para mejorar.
 
-  Problem Description: {{{problemDescription}}}
-  Programming Language: {{{language}}}
-  Code Solution:
+  Descripción del problema: {{{problemDescription}}}
+  Lenguaje de programación: {{{language}}}
+  Solución de código:
   \`\`\`{{{language}}}
   {{{code}}}
   \`\`\`
 
-  Test Cases:
+  Casos de prueba:
   {{#each testCases}}
-  Input: {{{input}}}
-  Expected Output: {{{expectedOutput}}}
+  Entrada: {{{input}}}
+  Salida esperada: {{{expectedOutput}}}
   {{/each}}
   `,
 });
@@ -93,4 +93,5 @@ const evaluateCodeSolutionFlow = ai.defineFlow<
   const {output} = await evaluateCodeSolutionPrompt(input);
   return output!;
 });
+
 

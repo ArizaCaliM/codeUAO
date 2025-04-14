@@ -59,17 +59,17 @@ const prompt = ai.definePrompt({
       constraints: z.string().describe('Constraints on the input values.'),
     }),
   },
-  prompt: `You are a programming problem generator. Generate a programming problem of {{difficulty}} difficulty.
+  prompt: `Eres un generador de problemas de programación. Genera un problema de programación de dificultad {{difficulty}}.
 
-Problem should include:
-- A title for the problem.
-- A detailed description of the problem.
-- The format of the input.
-- The format of the expected output.
-- An example input and its corresponding output.
-- Constraints on the input values.
+El problema debe incluir:
+- Un título para el problema.
+- Una descripción detallada del problema.
+- El formato de la entrada.
+- El formato de la salida esperada.
+- Un ejemplo de entrada y su salida correspondiente.
+- Restricciones en los valores de entrada.
 
-Difficulty: {{difficulty}}`,
+Dificultad: {{difficulty}}`,
 });
 
 const generateProgrammingProblemFlow = ai.defineFlow<
