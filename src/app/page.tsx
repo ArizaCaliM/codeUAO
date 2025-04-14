@@ -17,7 +17,13 @@ import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 import {CheckCircle, XCircle} from 'lucide-react';
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {Input} from "@/components/ui/input";
-import {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, Auth} from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  Auth,
+} from "firebase/auth";
 import {auth} from "@/lib/firebase";
 import {toast} from "@/hooks/use-toast";
 import Image from 'next/image';
@@ -57,7 +63,7 @@ export default function Home() {
 
   useEffect(() => {
     // Initialize Firebase Auth
-    const fbAuth = auth();
+    const fbAuth = auth; // Use the auth object directly
     setFirebaseAuth(fbAuth);
 
     const unsubscribe = fbAuth?.onAuthStateChanged((user) => {
@@ -175,7 +181,7 @@ export default function Home() {
       <div className="flex flex-col items-center p-4 w-full">
         <div className="flex items-center mb-4">
             <Image
-              src="https://picsum.photos/50/50"
+              src="https://firebasestorage.googleapis.com/v0/b/codeuao.appspot.com/o/logo_codeuao.png?alt=media&token=c99a97d9-90a7-4a92-b8ad-b47668643949"
               alt="Logo de CodeUAO"
               width={50}
               height={50}
@@ -233,7 +239,7 @@ export default function Home() {
     <div className="flex flex-col items-center p-4 w-full">
       <div className="flex items-center mb-4">
         <Image
-          src="https://picsum.photos/50/50"
+          src="https://firebasestorage.googleapis.com/v0/b/codeuao.appspot.com/o/logo_codeuao.png?alt=media&token=c99a97d9-90a7-4a92-b8ad-b47668643949"
           alt="Logo de CodeUAO"
           width={50}
           height={50}
