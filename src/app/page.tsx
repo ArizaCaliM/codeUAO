@@ -48,7 +48,7 @@ export default function Home() {
       setProblem(generatedProblem);
       setEvaluation(null); // Clear previous evaluation
     } catch (error) {
-      console.error('Failed to generate problem:', error);
+      console.error('Error al generar el problema:', error);
       // Handle error appropriately, maybe set an error state
     } finally {
       setLoading(false);
@@ -57,7 +57,7 @@ export default function Home() {
 
   const handleSubmitCode = async () => {
     if (!problem) {
-      alert('Please generate a problem first.');
+      alert('Por favor, genera un problema primero.');
       return;
     }
 
@@ -77,7 +77,7 @@ export default function Home() {
       });
       setEvaluation(evaluationResult);
     } catch (error) {
-      console.error('Failed to evaluate code:', error);
+      console.error('Error al evaluar el código:', error);
       // Handle error appropriately, maybe set an error state
     } finally {
       setLoading(false);
@@ -90,27 +90,27 @@ export default function Home() {
       <div className="flex flex-col md:flex-row w-full max-w-4xl space-y-4 md:space-x-4">
         <Card className="w-full md:w-1/2">
           <CardHeader>
-            <CardTitle>Problem Generation</CardTitle>
+            <CardTitle>Generación de Problemas</CardTitle>
             <CardDescription>
-              Generate a new programming problem based on the selected difficulty.
+              Genera un nuevo problema de programación basado en la dificultad seleccionada.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex items-center space-x-2">
-              <label htmlFor="difficulty">Difficulty:</label>
+              <label htmlFor="difficulty">Dificultad:</label>
               <Select value={difficulty} onValueChange={value => setDifficulty(value as 'easy' | 'medium' | 'hard')}>
                 <SelectTrigger id="difficulty">
-                  <SelectValue placeholder="Select difficulty"/>
+                  <SelectValue placeholder="Selecciona la dificultad"/>
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="easy">Easy</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="hard">Hard</SelectItem>
+                  <SelectItem value="easy">Fácil</SelectItem>
+                  <SelectItem value="medium">Medio</SelectItem>
+                  <SelectItem value="hard">Difícil</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <Button onClick={handleGenerateProblem} disabled={loading}>
-              {loading ? 'Generating...' : 'Generate Problem'}
+              {loading ? 'Generando...' : 'Generar Problema'}
             </Button>
             {problem && (
               <div className="mt-4">
@@ -118,16 +118,16 @@ export default function Home() {
                 <p>{problem.description}</p>
                 <div className="mt-2">
                   <p>
-                    <strong>Input Format:</strong> {problem.inputFormat}
+                    <strong>Formato de entrada:</strong> {problem.inputFormat}
                   </p>
                   <p>
-                    <strong>Output Format:</strong> {problem.outputFormat}
+                    <strong>Formato de salida:</strong> {problem.outputFormat}
                   </p>
                   <p>
-                    <strong>Example:</strong> {problem.example}
+                    <strong>Ejemplo:</strong> {problem.example}
                   </p>
                   <p>
-                    <strong>Constraints:</strong> {problem.constraints}
+                    <strong>Restricciones:</strong> {problem.constraints}
                   </p>
                 </div>
               </div>
@@ -137,15 +137,15 @@ export default function Home() {
 
         <Card className="w-full md:w-1/2">
           <CardHeader>
-            <CardTitle>Code Submission</CardTitle>
-            <CardDescription>Submit your code solution for evaluation.</CardDescription>
+            <CardTitle>Envío de Código</CardTitle>
+            <CardDescription>Envía tu solución de código para evaluación.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex items-center space-x-2">
-              <label htmlFor="language">Language:</label>
+              <label htmlFor="language">Lenguaje:</label>
               <Select value={language} onValueChange={setLanguage}>
                 <SelectTrigger id="language">
-                  <SelectValue placeholder="Select language"/>
+                  <SelectValue placeholder="Selecciona el lenguaje"/>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="javascript">JavaScript</SelectItem>
@@ -155,13 +155,13 @@ export default function Home() {
               </Select>
             </div>
             <Textarea
-              placeholder="Enter your code here"
+              placeholder="Introduce tu código aquí"
               value={code}
               onChange={e => setCode(e.target.value)}
               className="min-h-[100px]"
             />
             <Button onClick={handleSubmitCode} disabled={loading}>
-              {loading ? 'Submitting...' : 'Submit Code'}
+              {loading ? 'Enviando...' : 'Enviar Código'}
             </Button>
           </CardContent>
         </Card>
@@ -170,9 +170,9 @@ export default function Home() {
       {evaluation && (
         <Card className="w-full max-w-4xl mt-4">
           <CardHeader>
-            <CardTitle>Evaluation Results</CardTitle>
+            <CardTitle>Resultados de la Evaluación</CardTitle>
             <CardDescription>
-              Here are the results of your code evaluation.
+              Aquí están los resultados de la evaluación de tu código.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -183,20 +183,20 @@ export default function Home() {
                 ) : (
                   <XCircle className="h-4 w-4"/>
                 )}
-                <AlertTitle>Test Case #{index + 1}: {result.passed ? 'Passed' : 'Failed'}</AlertTitle>
+                <AlertTitle>Caso de Prueba #{index + 1}: {result.passed ? 'Aprobado' : 'Fallido'}</AlertTitle>
                 <AlertDescription>
-                  Input: {result.input}
+                  Entrada: {result.input}
                   <br/>
-                  Expected Output: {result.expectedOutput}
+                  Salida esperada: {result.expectedOutput}
                   <br/>
-                  Actual Output: {result.actualOutput}
+                  Salida obtenida: {result.actualOutput}
                 </AlertDescription>
               </Alert>
             ))}
             <div className="mt-4">
-              <h4 className="text-md font-semibold">Overall Score: {evaluation.overallScore}</h4>
+              <h4 className="text-md font-semibold">Puntuación total: {evaluation.overallScore}</h4>
               <p>
-                <strong>Feedback:</strong> {evaluation.feedback}
+                <strong>Retroalimentación:</strong> {evaluation.feedback}
               </p>
             </div>
           </CardContent>
@@ -205,4 +205,3 @@ export default function Home() {
     </div>
   );
 }
-
