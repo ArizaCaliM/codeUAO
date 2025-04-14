@@ -20,6 +20,7 @@ import {Input} from "@/components/ui/input";
 import {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, Auth} from "firebase/auth";
 import {auth} from "@/lib/firebase";
 import {toast} from "@/hooks/use-toast";
+import Image from 'next/image';
 
 export default function Home() {
   const [problem, setProblem] = useState<{
@@ -123,19 +124,21 @@ export default function Home() {
         setAuthLoading(true);
     try {
       if (!firebaseAuth) {
-        throw new Error("Firebase Auth not initialized");
+        throw new Error("Firebase Auth no inicializado");
       }
       if (isLogin) {
         // Sign in
         await signInWithEmailAndPassword(firebaseAuth, email, password);
         toast({
           title: "Inicio de sesión exitoso",
+          description: "Sesión iniciada correctamente."
         })
       } else {
         // Sign up
         await createUserWithEmailAndPassword(firebaseAuth, email, password);
         toast({
           title: "Cuenta creada exitosamente",
+          description: "La cuenta se ha creado con éxito."
         })
       }
     } catch (error: any) {
@@ -154,9 +157,10 @@ export default function Home() {
         await signOut(firebaseAuth);
         toast({
           title: "Sesión cerrada",
+          description: "Sesión cerrada correctamente."
         })
       } else {
-          throw new Error("Firebase Auth not initialized")
+          throw new Error("Firebase Auth no inicializado")
       }
     } catch (error: any) {
       toast({
@@ -169,7 +173,16 @@ export default function Home() {
   if (!user) {
     return (
       <div className="flex flex-col items-center p-4 w-full">
-        <h1 className="text-2xl font-bold mb-4"><span className="text-red-500">CodeUAO</span></h1>
+        <div className="flex items-center mb-4">
+            <Image
+              src="https://picsum.photos/50/50"
+              alt="Logo de CodeUAO"
+              width={50}
+              height={50}
+              className="mr-2 rounded-full"
+            />
+            <h1 className="text-2xl font-bold mb-4"><span className="text-red-500">CodeUAO</span></h1>
+          </div>
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle>{isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}</CardTitle>
@@ -218,7 +231,16 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center p-4 w-full">
-      <h1 className="text-2xl font-bold mb-4"><span className="text-red-500">CodeUAO</span></h1>
+      <div className="flex items-center mb-4">
+        <Image
+          src="https://picsum.photos/50/50"
+          alt="Logo de CodeUAO"
+          width={50}
+          height={50}
+          className="mr-2 rounded-full"
+        />
+        <h1 className="text-2xl font-bold"><span className="text-red-500">CodeUAO</span></h1>
+      </div>
       <Button variant="outline" onClick={handleSignOut}>Cerrar Sesión</Button>
       <div className="flex flex-col md:flex-row w-full max-w-4xl space-y-4 md:space-x-4">
         <Card className="w-full md:w-1/2">
