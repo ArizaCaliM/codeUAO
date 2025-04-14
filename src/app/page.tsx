@@ -17,7 +17,7 @@ import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
 import {CheckCircle, XCircle} from 'lucide-react';
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {Input} from "@/components/ui/input";
-import {signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, Auth} from "firebase/auth";
+import {signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, Auth} from "firebase/auth";
 import {auth} from "@/lib/firebase";
 import {toast} from "@/hooks/use-toast";
 
@@ -56,12 +56,13 @@ export default function Home() {
 
   useEffect(() => {
     // Initialize Firebase Auth
-    setFirebaseAuth(auth());
+    const fbAuth = auth();
+    setFirebaseAuth(fbAuth);
 
-    const unsubscribe = auth().onAuthStateChanged((user) => {
+    const unsubscribe = fbAuth?.onAuthStateChanged((user) => {
       setUser(user);
-    });
-    return () => unsubscribe();
+    })
+    return () => unsubscribe ? unsubscribe() : null;
   }, []);
 
   const handleGenerateProblem = async () => {
@@ -149,13 +150,14 @@ export default function Home() {
 
   const handleSignOut = async () => {
     try {
-      if (!firebaseAuth) {
-        throw new Error("Firebase Auth not initialized");
+      if (firebaseAuth) {
+        await signOut(firebaseAuth);
+        toast({
+          title: "Sesión cerrada",
+        })
+      } else {
+          throw new Error("Firebase Auth not initialized")
       }
-      await signOut(firebaseAuth);
-      toast({
-        title: "Sesión cerrada",
-      })
     } catch (error: any) {
       toast({
         title: "Error",

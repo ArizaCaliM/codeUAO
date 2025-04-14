@@ -38,16 +38,14 @@ const initializeFirebase = () => {
       console.log("Firebase initialized successfully.");
     } else {
       _app = getApps()[0]; // Use existing app
-      _auth = getAuth(_app);
+      if (!_auth) {
+        _auth = getAuth(_app);
+      }
       console.log("Using existing Firebase app.");
     }
     return _auth;
   } catch (error: any) {
     console.error("Firebase initialization error:", error.message);
-    // Only throw if not already initialized and the error is not due to existing app
-    if (getApps().length === 0 || !/already exists/.test(error.message)) {
-      throw new Error("Firebase initialization failed. Check your environment variables.");
-    }
     return null;
   }
 };
