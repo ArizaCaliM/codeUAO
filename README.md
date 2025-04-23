@@ -1,5 +1,2 @@
-# Firebase Studio
-
-This is a NextJS starter in Firebase Studio.
-
-To get started, take a look at src/app/page.tsx.
+Aplicación de estilo leetcode, realizada para ambiente estudiantil
+ #Al descargar se debe configurar una cuenta de Firebase con todas sus conexiones en archivo .env para que sea ejecutable
